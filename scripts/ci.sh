@@ -65,6 +65,10 @@ cd "$WORK/repo"
 
 for branch in "${ALL_EXERCISES[@]}"; do
     echo "=== $branch ==="
+    # Discard the previous iteration's applied solution (and bazel symlinks)
+    # before hopping branches, so no checkout is ever blocked by local state.
+    git reset --hard -q
+    git clean -fdqx
     git checkout -q "$branch"
 
     # Word splitting of $extra_flags is intentional (it holds 0 or 1 flags).
