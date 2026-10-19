@@ -1,6 +1,6 @@
 # .NET Workshop (Gazelle + NuGet codelab) Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers-subagent-driven-development (recommended) or superpowers-executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers-subagent-driven-development (recommended) or superpowers-executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build the standalone `dotnet_workshop` git repository: a five-branch, EngFlow-style hands-on codelab teaching rules_dotnet's Gazelle C# extension and `nuget.resolve`, where participants write only Bazel files for a given C# tic-tac-toe game.
 
@@ -67,12 +67,12 @@ The implementer runs inside a nono sandbox. These accommodations apply ONLY to t
 
 Rationale: the sandbox denies reading the system JDK's `conf` directory, which breaks every Bazel build (see Local environment notes). This task provisions a readable JDK once. If `/tmp/opencode/jdk/jdk-21.0.12.1+1` already exists and runs, the download steps can be skipped.
 
-- [ ] **Step 1: Check whether the JDK is already present**
+- [x] **Step 1: Check whether the JDK is already present**
 
 Run: `ls /tmp/opencode/jdk/jdk-21.0.12.1+1/bin/java && /tmp/opencode/jdk/jdk-21.0.12.1+1/bin/java -version`
 Expected: prints `openjdk version "21.0.12" ...` (or similar 21.0.x line). If so, skip to Step 3. If `ls` fails, continue with Step 2.
 
-- [ ] **Step 2: Download and extract Temurin JDK 21**
+- [x] **Step 2: Download and extract Temurin JDK 21**
 
 Run:
 ```bash
@@ -83,7 +83,7 @@ ls /tmp/opencode/jdk
 ```
 Expected: `ls` prints `jdk-21.0.12.1+1` and `jdk.tar.gz` (the exact JDK build suffix may differ on re-download; if it differs, use the actual directory name as `JAVA_HOME` everywhere in this plan instead).
 
-- [ ] **Step 3: Verify bazel runs with this JAVA_HOME**
+- [x] **Step 3: Verify bazel runs with this JAVA_HOME**
 
 Run:
 ```bash
@@ -102,7 +102,7 @@ Expected: prints `/usr/bin/bazel` and `bazel 9.3.0` (any 9.x is acceptable).
 - Create: `/home/jhobert/Projects/Gazelle/dotnet_workshop/next_exercise.sh`
 - Existing (keep, commit): `/home/jhobert/Projects/Gazelle/dotnet_workshop/docs/superpowers/specs/2026-10-19-dotnet-workshop-design.md`
 
-- [ ] **Step 1: Initialize the git repository on branch `main`**
+- [x] **Step 1: Initialize the git repository on branch `main`**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -111,7 +111,7 @@ git status --short
 ```
 Expected: `Initialized empty Git repository ...`; status lists untracked `docs/` only.
 
-- [ ] **Step 2: Verify git identity is configured**
+- [x] **Step 2: Verify git identity is configured**
 
 Run: `git config user.name && git config user.email`
 Expected: both print a value. If either prints nothing, run:
@@ -120,7 +120,7 @@ git config user.name "Workshop Author"
 git config user.email "workshop@example.com"
 ```
 
-- [ ] **Step 3: Write `.gitignore`**
+- [x] **Step 3: Write `.gitignore`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/.gitignore` with exactly:
 
@@ -130,7 +130,7 @@ bazel-*
 MODULE.bazel.lock
 ```
 
-- [ ] **Step 4: Write `next_exercise.sh`**
+- [x] **Step 4: Write `next_exercise.sh`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/next_exercise.sh` with exactly:
 
@@ -202,7 +202,7 @@ echo "You are now on $next."
 echo "Open README.md to start the exercise."
 ```
 
-- [ ] **Step 5: Write the main `README.md`**
+- [x] **Step 5: Write the main `README.md`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/README.md` with exactly:
 
@@ -278,7 +278,7 @@ use `git stash` before hopping branches.
 ```
 ````
 
-- [ ] **Step 6: Stage everything and set the script's executable bit**
+- [x] **Step 6: Stage everything and set the script's executable bit**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -288,7 +288,7 @@ git ls-files -s next_exercise.sh
 ```
 Expected: last command prints a line starting with `100755 ` for `next_exercise.sh` (the executable bit is stored in git even though `chmod` is unavailable in this sandbox).
 
-- [ ] **Step 7: Commit main**
+- [x] **Step 7: Commit main**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -309,7 +309,7 @@ Expected: one commit listed; `git status --short` shows only untracked `docs/sup
 - Create: `src/TicTacToe.Console/Program.cs` (plain `System.Console` version)
 - Modify (replace): `README.md`
 
-- [ ] **Step 1: Create the branch and strip maintenance docs**
+- [x] **Step 1: Create the branch and strip maintenance docs**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -319,7 +319,7 @@ git status --short
 ```
 Expected: staged deletion of `docs/superpowers/specs/2026-10-19-dotnet-workshop-design.md`. The untracked plan file under `docs/superpowers/plans/` must remain untouched (it is untracked; `git rm` only removes tracked files).
 
-- [ ] **Step 2: Write `src/TicTacToe.Engine/Player.cs`**
+- [x] **Step 2: Write `src/TicTacToe.Engine/Player.cs`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Engine/Player.cs` with exactly:
 
@@ -333,7 +333,7 @@ public enum Player
 }
 ```
 
-- [ ] **Step 3: Write `src/TicTacToe.Engine/Board.cs`**
+- [x] **Step 3: Write `src/TicTacToe.Engine/Board.cs`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Engine/Board.cs` with exactly:
 
@@ -432,7 +432,7 @@ public class Board
 }
 ```
 
-- [ ] **Step 4: Write `src/TicTacToe.Engine/ComputerPlayer.cs`**
+- [x] **Step 4: Write `src/TicTacToe.Engine/ComputerPlayer.cs`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Engine/ComputerPlayer.cs` with exactly:
 
@@ -489,7 +489,7 @@ public class ComputerPlayer
 }
 ```
 
-- [ ] **Step 5: Write `src/TicTacToe.Console/Program.cs` (plain console version)**
+- [x] **Step 5: Write `src/TicTacToe.Console/Program.cs` (plain console version)**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Console/Program.cs` with exactly (this is the version for exercises 000-001; verified to compile and to play a full game from piped input):
 
@@ -579,7 +579,7 @@ static void Render(Board board)
 }
 ```
 
-- [ ] **Step 6: Write the exercise-000 `README.md` (replaces the main one)**
+- [x] **Step 6: Write the exercise-000 `README.md` (replaces the main one)**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/README.md` with exactly:
 
@@ -656,7 +656,7 @@ Exercise 001 adds exactly those two files.
 Run `./next_exercise.sh` to move on to exercise 001.
 ````
 
-- [ ] **Step 7: Verify the broken starting state**
+- [x] **Step 7: Verify the broken starting state**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -664,7 +664,7 @@ bazel run //:app 2>&1 | head -3
 ```
 Expected: fails; output contains `ERROR: Bazel 'run' must be invoked from within a workspace (below a directory having a MODULE.bazel file).` (No JAVA_HOME needed — it fails before toolchain resolution.)
 
-- [ ] **Step 8: Commit exercise-000-intro**
+- [x] **Step 8: Commit exercise-000-intro**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -683,7 +683,7 @@ Expected: two commits; `git status --short` shows only untracked `docs/superpowe
 - Verification worktree: `/tmp/opencode/wt-001/` (branch `exercise-001-hello-bazel`), where the reference solution (`MODULE.bazel`, `BUILD.bazel`) is written, built, smoke-run, and turned into a patch
 - Create (untracked for now, committed in Task 8): `docs/solutions/exercise-001-hello-bazel.patch`
 
-- [ ] **Step 1: Create the branch**
+- [x] **Step 1: Create the branch**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -691,7 +691,7 @@ git checkout -b exercise-001-hello-bazel
 ```
 Expected: `Switched to a new branch 'exercise-001-hello-bazel'`.
 
-- [ ] **Step 2: Write the exercise-001 `README.md`**
+- [x] **Step 2: Write the exercise-001 `README.md`**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/README.md` with exactly:
 
@@ -797,7 +797,7 @@ csharp_binary(
 Run `./next_exercise.sh` to move on to exercise 002.
 ````
 
-- [ ] **Step 3: Commit exercise-001-hello-bazel**
+- [x] **Step 3: Commit exercise-001-hello-bazel**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -807,7 +807,7 @@ git log --oneline
 ```
 Expected: three commits. (The starting state is still intentionally broken — there is no MODULE.bazel on this branch; the reference solution lives in the README hint and in the patch produced below.)
 
-- [ ] **Step 4: Create a verification worktree for the reference solution**
+- [x] **Step 4: Create a verification worktree for the reference solution**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -816,7 +816,7 @@ ls /tmp/opencode/wt-001
 ```
 Expected: `Preparing worktree (checking out 'exercise-001-hello-bazel')`; `ls` shows `README.md`, `next_exercise.sh`, `src`, `.gitignore`.
 
-- [ ] **Step 5: Write the reference solution files into the worktree**
+- [x] **Step 5: Write the reference solution files into the worktree**
 
 Create `/tmp/opencode/wt-001/MODULE.bazel` with exactly:
 
@@ -849,7 +849,7 @@ csharp_binary(
 )
 ```
 
-- [ ] **Step 6: Build the reference solution**
+- [x] **Step 6: Build the reference solution**
 
 Run (workdir: `/tmp/opencode/wt-001`):
 ```bash
@@ -858,7 +858,7 @@ bazel build //:app
 ```
 Expected: `INFO: Build completed successfully` and `Target //:app up-to-date:` listing `bazel-bin/app/net10.0/app.dll`. (First build downloads the .NET SDK; several minutes is normal.)
 
-- [ ] **Step 7: Smoke-run the game with piped input**
+- [x] **Step 7: Smoke-run the game with piped input**
 
 Run (workdir: `/tmp/opencode/wt-001`):
 ```bash
@@ -867,7 +867,7 @@ printf '1\n2\n3\n4\n5\n6\n7\n8\n9\n' | bazel run //:app 2>&1 | grep -E 'wins!|dr
 ```
 Expected: prints exactly one of `You win!`, `The computer wins!`, or `It's a draw!` (which one depends on the computer's random moves; all three prove the game ran to completion).
 
-- [ ] **Step 8: Generate the solution patch onto the main worktree**
+- [x] **Step 8: Generate the solution patch onto the main worktree**
 
 Run (workdir: `/tmp/opencode/wt-001`):
 ```bash
@@ -878,7 +878,7 @@ git apply --stat /home/jhobert/Projects/Gazelle/dotnet_workshop/docs/solutions/e
 ```
 Expected: the stat lists exactly `MODULE.bazel` and `BUILD.bazel` (2 files changed). The patch file is untracked in the main worktree — that is fine; Task 8 commits it.
 
-- [ ] **Step 9: Remove the verification worktree**
+- [x] **Step 9: Remove the verification worktree**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -899,7 +899,7 @@ Expected: only the main worktree remains listed.
 - Verification worktree: `/tmp/opencode/wt-002/`
 - Create (untracked until Task 8): `docs/solutions/exercise-002-nuget-resolve.patch`
 
-- [ ] **Step 1: Create the branch and write the exercise-001 solution files**
+- [x] **Step 1: Create the branch and write the exercise-001 solution files**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -938,7 +938,7 @@ csharp_binary(
 )
 ```
 
-- [ ] **Step 2: Replace Program.cs with the given Spectre.Console version**
+- [x] **Step 2: Replace Program.cs with the given Spectre.Console version**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Console/Program.cs` with exactly (verified to compile once `@nuget.net10.0//spectre.console` is a dependency):
 
@@ -1022,7 +1022,7 @@ static void Render(Board board)
 }
 ```
 
-- [ ] **Step 3: Verify the broken starting state (the didactic motivation)**
+- [x] **Step 3: Verify the broken starting state (the didactic motivation)**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1031,7 +1031,7 @@ bazel build //... 2>&1 | grep -E 'error CS|ERROR' | head -5
 ```
 Expected: contains `error CS0246: The type or namespace name 'Spectre' could not be found` and `ERROR: Build did NOT complete successfully`.
 
-- [ ] **Step 4: Write the exercise-002 `README.md`**
+- [x] **Step 4: Write the exercise-002 `README.md`**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/README.md` with exactly:
 
@@ -1198,7 +1198,7 @@ csharp_binary(
 Run `./next_exercise.sh` to move on to exercise 003.
 ````
 
-- [ ] **Step 5: Commit exercise-002-nuget-resolve**
+- [x] **Step 5: Commit exercise-002-nuget-resolve**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1208,7 +1208,7 @@ git log --oneline
 ```
 Expected: four commits; `git status --short` shows only untracked `docs/` entries (plan + patches).
 
-- [ ] **Step 6: Create the verification worktree**
+- [x] **Step 6: Create the verification worktree**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1216,7 +1216,7 @@ git worktree add /tmp/opencode/wt-002 exercise-002-nuget-resolve
 ```
 Expected: `Preparing worktree (checking out 'exercise-002-nuget-resolve')`.
 
-- [ ] **Step 7: Write the exercise-002 solution MODULE.bazel and BUILD.bazel into the worktree**
+- [x] **Step 7: Write the exercise-002 solution MODULE.bazel and BUILD.bazel into the worktree**
 
 Overwrite `/tmp/opencode/wt-002/MODULE.bazel` with exactly:
 
@@ -1261,7 +1261,7 @@ csharp_binary(
 )
 ```
 
-- [ ] **Step 8: Seed the lock file and run the real pin**
+- [x] **Step 8: Seed the lock file and run the real pin**
 
 Create `/tmp/opencode/wt-002/nuget_resolve.json` with exactly:
 
@@ -1284,7 +1284,7 @@ REPIN=1 bazel run @nuget.net10.0//:pin 2>&1 | tail -2
 ```
 Expected: last line is `Updated nuget_resolve.json.`
 
-- [ ] **Step 9: Verify the generated lock file matches the known-good content byte-for-byte**
+- [x] **Step 9: Verify the generated lock file matches the known-good content byte-for-byte**
 
 Run (workdir: `/tmp/opencode/wt-002`):
 ```bash
@@ -1312,7 +1312,7 @@ EXPECTEDdiff -u /tmp/opencode/expected/nuget_resolve.spectre.json nuget_resolve.
 ```
 Expected: `diff` prints nothing and exits 0. If `diff` shows differences, the pinned rules_dotnet commit has drifted from this plan — stop and re-check the pin before continuing.
 
-- [ ] **Step 10: Build the solved state and check pin idempotence**
+- [x] **Step 10: Build the solved state and check pin idempotence**
 
 Run (workdir: `/tmp/opencode/wt-002`):
 ```bash
@@ -1324,7 +1324,7 @@ git diff --exit-code
 ```
 Expected: `INFO: Build completed successfully`; the second pin prints `Updated nuget_resolve.json.` (or leaves it identical); `git diff --exit-code` prints nothing and exits 0 (lock file is stable under re-pinning).
 
-- [ ] **Step 11: Generate the patch and remove the worktree**
+- [x] **Step 11: Generate the patch and remove the worktree**
 
 Run (workdir: `/tmp/opencode/wt-002`):
 ```bash
@@ -1351,7 +1351,7 @@ Expected: no output; `git worktree list` shows only the main worktree.
 - Verification worktree: `/tmp/opencode/wt-003/`
 - Create (untracked until Task 8): `docs/solutions/exercise-003-gazelle.patch`
 
-- [ ] **Step 1: Create the branch and apply the exercise-002 solution files**
+- [x] **Step 1: Create the branch and apply the exercise-002 solution files**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1431,7 +1431,7 @@ grep -c 'u002B' nuget_resolve.json
 ```
 Expected: `1`.
 
-- [ ] **Step 2: Sanity-build the exercise-002 solution state**
+- [x] **Step 2: Sanity-build the exercise-002 solution state**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1440,7 +1440,7 @@ bazel build //...
 ```
 Expected: `INFO: Build completed successfully`. (The exercise-003 starting state is the working exercise-002 solution; only exercise 000/002/004 start broken.)
 
-- [ ] **Step 3: Write the exercise-003 `README.md`**
+- [x] **Step 3: Write the exercise-003 `README.md`**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/README.md` with exactly:
 
@@ -1625,7 +1625,7 @@ csharp_binary(
 Run `./next_exercise.sh` to move on to exercise 004.
 ````
 
-- [ ] **Step 4: Commit exercise-003-gazelle**
+- [x] **Step 4: Commit exercise-003-gazelle**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1635,7 +1635,7 @@ git log --oneline
 ```
 Expected: five commits.
 
-- [ ] **Step 5: Create the verification worktree and write the exercise-003 solution scaffolding**
+- [x] **Step 5: Create the verification worktree and write the exercise-003 solution scaffolding**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1702,7 +1702,7 @@ alias(
 )
 ```
 
-- [ ] **Step 6: Run Gazelle for real in the worktree**
+- [x] **Step 6: Run Gazelle for real in the worktree**
 
 Run (workdir: `/tmp/opencode/wt-003`):
 ```bash
@@ -1712,7 +1712,7 @@ ls src/TicTacToe.Engine/BUILD.bazel src/TicTacToe.Console/BUILD.bazel
 ```
 Expected: `INFO: Build completed successfully`, and both generated BUILD files exist. (The `--@rules_go//go/config:pure` flag is a local sandbox workaround — cgo headers are unreadable here; see Local environment notes. It is not workshop content.)
 
-- [ ] **Step 7: Verify the generated files match the known-good content byte-for-byte**
+- [x] **Step 7: Verify the generated files match the known-good content byte-for-byte**
 
 Run (workdir: `/tmp/opencode/wt-003`):
 ```bash
@@ -1752,7 +1752,7 @@ diff -u /tmp/opencode/expected/Console.003.BUILD.bazel src/TicTacToe.Console/BUI
 ```
 Expected: both `diff` commands print nothing and exit 0.
 
-- [ ] **Step 8: Build the solved state and verify Gazelle idempotence**
+- [x] **Step 8: Build the solved state and verify Gazelle idempotence**
 
 Run (workdir: `/tmp/opencode/wt-003`):
 ```bash
@@ -1764,7 +1764,7 @@ git diff --exit-code
 ```
 Expected: `INFO: Build completed successfully`; second gazelle run succeeds; `git diff --exit-code` prints nothing and exits 0 (regeneration changes nothing).
 
-- [ ] **Step 9: Generate the patch and remove the worktree**
+- [x] **Step 9: Generate the patch and remove the worktree**
 
 Run (workdir: `/tmp/opencode/wt-003`):
 ```bash
@@ -1794,7 +1794,7 @@ Expected: `git worktree list` shows only the main worktree.
 - Verification worktree: `/tmp/opencode/wt-004/`
 - Create (untracked until Task 8): `docs/solutions/exercise-004-change.patch`
 
-- [ ] **Step 1: Create the branch and apply the exercise-003 solution files**
+- [x] **Step 1: Create the branch and apply the exercise-003 solution files**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -1897,7 +1897,7 @@ csharp_binary(
 )
 ```
 
-- [ ] **Step 2: Write the given `HighScores.cs`**
+- [x] **Step 2: Write the given `HighScores.cs`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Console/HighScores.cs` with exactly:
 
@@ -1940,7 +1940,7 @@ public class HighScores
 }
 ```
 
-- [ ] **Step 3: Replace Program.cs with the given exercise-004 version**
+- [x] **Step 3: Replace Program.cs with the given exercise-004 version**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/src/TicTacToe.Console/Program.cs` with exactly (note: `using TicTacToe.Console;` + unqualified `HighScores` is REQUIRED — a fully-qualified reference would be invisible to Gazelle's dependency resolver; verified):
 
@@ -2045,7 +2045,7 @@ static void RenderScores(HighScores scores)
 }
 ```
 
-- [ ] **Step 4: Verify the broken starting state**
+- [x] **Step 4: Verify the broken starting state**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2054,7 +2054,7 @@ bazel build //... --@rules_go//go/config:pure 2>&1 | grep -E 'error CS|ERROR' | 
 ```
 Expected: a C# compile error on `Program.cs` about `TicTacToe.Console` / `HighScores` not being found, and `ERROR: Build did NOT complete successfully`. (HighScores.cs is present but not in any target, and Newtonsoft.Json is neither pinned nor depended on — the failure is the exercise's motivation.)
 
-- [ ] **Step 5: Write the exercise-004 `README.md`**
+- [x] **Step 5: Write the exercise-004 `README.md`**
 
 Overwrite `/home/jhobert/Projects/Gazelle/dotnet_workshop/README.md` with exactly:
 
@@ -2189,7 +2189,7 @@ This is the last exercise. Run `./next_exercise.sh` once more for the
 completion message.
 ````
 
-- [ ] **Step 6: Commit exercise-004-change**
+- [x] **Step 6: Commit exercise-004-change**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2199,7 +2199,7 @@ git log --oneline
 ```
 Expected: six commits.
 
-- [ ] **Step 7: Create the verification worktree and apply the exercise-004 solution MODULE.bazel**
+- [x] **Step 7: Create the verification worktree and apply the exercise-004 solution MODULE.bazel**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2238,7 +2238,7 @@ bazel_dep(name = "gazelle", version = "0.51.3", repo_name = "bazel_gazelle")
 bazel_dep(name = "rules_go", version = "0.59.0")
 ```
 
-- [ ] **Step 8: Repin and verify the lock file matches the known-good content byte-for-byte**
+- [x] **Step 8: Repin and verify the lock file matches the known-good content byte-for-byte**
 
 Run (workdir: `/tmp/opencode/wt-004`):
 ```bash
@@ -2276,7 +2276,7 @@ diff -u /tmp/opencode/expected/nuget_resolve.full.json nuget_resolve.json
 ```
 Expected: first line `Updated nuget_resolve.json.`; `diff` prints nothing and exits 0.
 
-- [ ] **Step 9: Regazelle and verify the Console BUILD matches the known-good content**
+- [x] **Step 9: Regazelle and verify the Console BUILD matches the known-good content**
 
 Run (workdir: `/tmp/opencode/wt-004`):
 ```bash
@@ -2312,7 +2312,7 @@ git status --short src/
 ```
 Expected: `diff` prints nothing; status shows only `src/TicTacToe.Console/BUILD.bazel` modified (the Engine BUILD is unchanged).
 
-- [ ] **Step 10: Build the final state; verify gazelle idempotence and lock freshness**
+- [x] **Step 10: Build the final state; verify gazelle idempotence and lock freshness**
 
 Run (workdir: `/tmp/opencode/wt-004`):
 ```bash
@@ -2326,7 +2326,7 @@ git diff --exit-code
 ```
 Expected: `INFO: Build completed successfully`; both `git diff --exit-code` commands print nothing and exit 0.
 
-- [ ] **Step 11: Generate the patch and remove the worktree**
+- [x] **Step 11: Generate the patch and remove the worktree**
 
 Run (workdir: `/tmp/opencode/wt-004`):
 ```bash
@@ -2351,7 +2351,7 @@ Expected: `git worktree list` shows only the main worktree.
 - Create: `.github/workflows/ci.yml`
 - Commit (already on disk, untracked): `docs/solutions/exercise-001-hello-bazel.patch`, `docs/solutions/exercise-002-nuget-resolve.patch`, `docs/solutions/exercise-003-gazelle.patch`, `docs/solutions/exercise-004-change.patch`, `docs/superpowers/plans/2026-10-19-dotnet-workshop.md`
 
-- [ ] **Step 1: Switch back to main and confirm the patches are present**
+- [x] **Step 1: Switch back to main and confirm the patches are present**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2360,7 +2360,7 @@ ls docs/solutions/
 ```
 Expected: `Switched to branch 'main'`; the four patch files are listed (untracked files persist across checkouts because no exercise branch tracks `docs/solutions/`).
 
-- [ ] **Step 2: Write `scripts/ci.sh`**
+- [x] **Step 2: Write `scripts/ci.sh`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/scripts/ci.sh` with exactly:
 
@@ -2516,7 +2516,7 @@ echo "workshop completion message printed"
 echo "CI PASSED"
 ```
 
-- [ ] **Step 3: Write `.github/workflows/ci.yml`**
+- [x] **Step 3: Write `.github/workflows/ci.yml`**
 
 Create `/home/jhobert/Projects/Gazelle/dotnet_workshop/.github/workflows/ci.yml` with exactly:
 
@@ -2546,7 +2546,7 @@ jobs:
         run: bash scripts/ci.sh
 ```
 
-- [ ] **Step 4: Stage and commit everything on main**
+- [x] **Step 4: Stage and commit everything on main**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2566,7 +2566,7 @@ Expected: `git ls-files -s` shows `100755` for both scripts; status before commi
 **Files:**
 - No new files. Runs `scripts/ci.sh`, which exercises every branch.
 
-- [ ] **Step 1: Run the full CI script**
+- [x] **Step 1: Run the full CI script**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2602,7 +2602,7 @@ CI PASSED
 ```
 If any check fails, fix the offending branch content (or patch) and re-run; patches must be regenerated from a worktree of the affected branch following the corresponding task's Steps 4-9 (001), 6-11 (002), 5-9 (003), or 7-11 (004), and the regenerated patch committed with `--amend` is NOT allowed — make a new commit on main instead.
 
-- [ ] **Step 2: Final repository sanity check**
+- [x] **Step 2: Final repository sanity check**
 
 Run (workdir: `/home/jhobert/Projects/Gazelle/dotnet_workshop`):
 ```bash
@@ -2613,6 +2613,6 @@ git status --short
 ```
 Expected: exactly one worktree (the main one); six branches (`main` plus the five exercise branches); main has two commits; the working tree is clean (`git status --short` prints nothing).
 
-- [ ] **Step 3: Report the finished workshop**
+- [x] **Step 3: Report the finished workshop**
 
 Summarize: branch list with one-line descriptions, the pinned rules_dotnet commit, the dependency versions, and the CI result. The workshop is ready for participants to clone and run `./next_exercise.sh`.
