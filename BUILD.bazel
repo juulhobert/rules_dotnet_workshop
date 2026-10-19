@@ -1,11 +1,24 @@
-load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary")
+load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
 
-csharp_binary(
+package(default_visibility = ["//visibility:public"])
+
+# gazelle:dotnet_target_frameworks net10.0
+
+gazelle_binary(
+    name = "gazelle_bin",
+    languages = ["@rules_dotnet//dotnet/gazelle"],
+)
+
+gazelle(
+    name = "gazelle",
+    extra_args = [
+        "-dotnet_nuget_lock_file=nuget_resolve.json",
+        ".",
+    ],
+    gazelle = "gazelle_bin",
+)
+
+alias(
     name = "app",
-    srcs = glob([
-        "src/TicTacToe.Console/*.cs",
-        "src/TicTacToe.Engine/*.cs",
-    ]),
-    target_frameworks = ["net10.0"],
-    deps = ["@nuget.net10.0//spectre.console"],
+    actual = "//src/TicTacToe.Console:program",
 )

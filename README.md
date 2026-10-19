@@ -1,178 +1,128 @@
-# Exercise 003 — Stop writing BUILD files (Gazelle)
+# Exercise 004 — Iterate like it's a real project
 
 ## Goal
 
-Generate and maintain the BUILD files with Gazelle instead of writing them by
-hand.
+Experience the full add-a-dependency iteration loop: edit MODULE.bazel →
+repin → rerun Gazelle → run.
 
 ## Starting state
 
-The working exercise-002 solution: a handwritten `csharp_binary` in the root
-`BUILD.bazel`, Spectre.Console pinned in `nuget_resolve.json`.
+Two new given files: `src/TicTacToe.Console/HighScores.cs` (persists game
+results as JSON using **Newtonsoft.Json**) and an updated `Program.cs` that
+records results and prints a high-score table after each game.
+
+The build is broken — try it:
+
+```sh
+bazel build //...
+```
+
+The compiler cannot find `HighScores` (it is in no Bazel target yet), and even
+once it is, Newtonsoft.Json is neither pinned nor depended upon.
 
 ## Steps
 
-1. Gazelle is a Go program, so add two `bazel_dep`s to `MODULE.bazel`:
-   `bazel_gazelle` and `rules_go` (exact versions in the hint — they must be
-   compatible with the pinned rules_dotnet commit). Note: in the Bazel Central
-   Registry the module is called `gazelle`; the dep uses
-   `repo_name = "bazel_gazelle"` so it keeps its traditional repository name.
+1. Read the build failure and identify what is missing.
 
-2. Rewrite the root `BUILD.bazel`:
-   - `load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")`;
-   - `package(default_visibility = ["//visibility:public"])`;
-   - the directive comment `# gazelle:dotnet_target_frameworks net10.0`;
-   - a `gazelle_binary` named `gazelle_bin` with
-     `languages = ["@rules_dotnet//dotnet/gazelle"]`;
-   - a `gazelle` target named `gazelle` with
-     `extra_args = ["-dotnet_nuget_lock_file=nuget_resolve.json", "."]` and
-     `gazelle = "gazelle_bin"`.
+2. Add `"Newtonsoft.Json": "13.0.3"` to the `packages` dict of the
+   `nuget.resolve` tag in `MODULE.bazel`.
 
-   The walk directory is `.` (the repository root), so the root directive
-   applies to everything below it.
+3. Repin the lock file:
 
-3. Delete the handwritten `csharp_binary` (it is replaced by the generated
-   targets — and its `srcs` glob would break the moment the generated BUILD
-   files turn `src/TicTacToe.*` into subpackages). Then run:
+   ```sh
+   REPIN=1 bazel run @nuget.net10.0//:pin
+   ```
+
+   Inspect the diff of `nuget_resolve.json`:
+
+   ```sh
+   git diff nuget_resolve.json
+   ```
+
+4. Regenerate the BUILD files:
 
    ```sh
    bazel run //:gazelle
    ```
 
-4. Study what Gazelle generated:
-   - `src/TicTacToe.Engine/BUILD.bazel` — a `csharp_library` named
-     `tictactoe_engine`;
-   - `src/TicTacToe.Console/BUILD.bazel` — a `csharp_binary` named `program`
-     whose `deps` contain both `//src/TicTacToe.Engine:tictactoe_engine` and
-     `@nuget.net10.0//spectre.console`, resolved automatically from your
-     `using` directives and `nuget_resolve.json`.
+   Inspect the diff of `src/TicTacToe.Console/BUILD.bazel`:
 
-5. Keep the familiar verification command working by adding an alias to the
-   root `BUILD.bazel`:
-
-   ```starlark
-   alias(
-       name = "app",
-       actual = "//src/TicTacToe.Console:program",
-   )
+   ```sh
+   git diff src/TicTacToe.Console/BUILD.bazel
    ```
 
-6. Run the game:
+   Two things appeared automatically: a `csharp_library` `tictactoe_console`
+   (holding `HighScores.cs`, depending on `@nuget.net10.0//newtonsoft.json`),
+   and a `:tictactoe_console` entry in the `program` binary's `deps`.
+
+5. Run the game:
 
    ```sh
    bazel run //:app
    ```
 
+   After the game you see the high-score table. Play again — the counters
+   persist (in `highscores.json` next to the running program).
+
 ## Expected outcome
 
-The same playable game, but the BUILD files in `src/` are now generated — and
-can be regenerated any time with `bazel run //:gazelle`.
+A playable game with a persistent high-score table — and you never touched a
+BUILD file by hand.
 
 <details>
-<summary>Hint: the MODULE.bazel additions</summary>
+<summary>Hint: the MODULE.bazel change</summary>
+
+One line in the `packages` dict:
 
 ```starlark
-bazel_dep(name = "gazelle", version = "0.51.3", repo_name = "bazel_gazelle")
-bazel_dep(name = "rules_go", version = "0.59.0")
-```
-
-</details>
-
-<details>
-<summary>Hint: complete root BUILD.bazel</summary>
-
-```starlark
-load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
-
-package(default_visibility = ["//visibility:public"])
-
-# gazelle:dotnet_target_frameworks net10.0
-
-gazelle_binary(
-    name = "gazelle_bin",
-    languages = ["@rules_dotnet//dotnet/gazelle"],
-)
-
-gazelle(
-    name = "gazelle",
-    extra_args = [
-        "-dotnet_nuget_lock_file=nuget_resolve.json",
-        ".",
-    ],
-    gazelle = "gazelle_bin",
-)
-
-alias(
-    name = "app",
-    actual = "//src/TicTacToe.Console:program",
+nuget.resolve(
+    name = "nuget",
+    packages = {
+        "Newtonsoft.Json": "13.0.3",
+        "Spectre.Console": "0.49.1",
+    },
+    frameworks = ["net10.0"],
+    lock_file = "//:nuget_resolve.json",
 )
 ```
 
 </details>
 
 <details>
-<summary>Hint: the two generated files</summary>
+<summary>Hint: the exact commands</summary>
 
-`src/TicTacToe.Engine/BUILD.bazel`:
-
-```starlark
-load("@rules_dotnet//dotnet:defs.bzl", "csharp_library")
-
-csharp_library(
-    name = "tictactoe_engine",
-    srcs = [
-        "Board.cs",
-        "ComputerPlayer.cs",
-        "Player.cs",
-    ],
-    project_sdk = "default",
-    target_frameworks = ["net10.0"],
-    visibility = ["//visibility:public"],
-)
-```
-
-`src/TicTacToe.Console/BUILD.bazel`:
-
-```starlark
-load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary")
-
-csharp_binary(
-    name = "program",
-    srcs = ["Program.cs"],
-    project_sdk = "default",
-    target_frameworks = ["net10.0"],
-    visibility = ["//visibility:public"],
-    deps = [
-        "//src/TicTacToe.Engine:tictactoe_engine",
-        "@nuget.net10.0//spectre.console",
-    ],
-)
+```sh
+REPIN=1 bazel run @nuget.net10.0//:pin
+bazel run //:gazelle
+bazel run //:app
 ```
 
 </details>
 
 ## Questions
 
-1. *How did Gazelle know that `using Spectre.Console;` means
-   `@nuget.net10.0//spectre.console`?*
+1. *Why did you not have to touch any BUILD file in this exercise?*
    <details><summary>Answer</summary>
-   The `-dotnet_nuget_lock_file` flag points Gazelle at `nuget_resolve.json`;
-   C# namespaces map to package ids from the lock file via longest-prefix
-   match.
+   Gazelle regenerates the per-directory BUILD files from the source `using`
+   directives and the lock file; those BUILD files are derived artifacts, not
+   source.
    </details>
-2. *How did Gazelle know about the Engine dependency?*
+2. *What would happen if you repinned but forgot to rerun Gazelle?*
    <details><summary>Answer</summary>
-   Every generated library indexes the namespaces declared by its sources; a
-   `using` in another directory resolves through Gazelle's resolve index to
-   that library's label.
+   The build still fails: the package is fetchable, but no target depends on
+   it (and `HighScores.cs` is in no target). Resolution and code generation
+   are separate steps.
    </details>
-3. *Why did the target names come out as `tictactoe_engine` and `program`?*
+3. *Which files in this repository are hand-written, and which are generated
+   or pinned?*
    <details><summary>Answer</summary>
-   A library is named after its directory, sanitized to a valid Bazel target
-   name (`TicTacToe.Engine` → `tictactoe_engine`: lowercased, dot removed); a
-   binary is named after its entry-point file stem (`Program.cs` → `program`).
+   Hand-written: the C# sources, `MODULE.bazel`, and the root `BUILD.bazel`
+   scaffolding (gazelle targets, alias, directive). Generated by Gazelle: the
+   per-directory BUILD files. Generated but checked in (pinned):
+   `nuget_resolve.json`.
    </details>
 
 ## Next
 
-Run `./next_exercise.sh` to move on to exercise 004.
+This is the last exercise. Run `./next_exercise.sh` once more for the
+completion message.

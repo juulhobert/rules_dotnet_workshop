@@ -1,0 +1,13 @@
+load("@rules_dotnet//dotnet:defs.bzl", "csharp_library")
+
+csharp_library(
+    name = "tictactoe_engine",
+    srcs = [
+        "Board.cs",
+        "ComputerPlayer.cs",
+        "Player.cs",
+    ],
+    project_sdk = "default",
+    target_frameworks = ["net10.0"],
+    visibility = ["//visibility:public"],
+)

@@ -1,9 +1,11 @@
 using System.Linq;
 using Spectre.Console;
+using TicTacToe.Console;
 using TicTacToe.Engine;
 
 var board = new Board();
 var computer = new ComputerPlayer(Player.O, Player.X);
+var scores = HighScores.Load();
 
 AnsiConsole.Write(new FigletText("Tic-Tac-Toe").Color(Color.Blue));
 AnsiConsole.MarkupLine("You are [bold yellow]X[/], the computer is [bold green]O[/].");
@@ -38,15 +40,21 @@ var winner = board.Winner();
 if (winner == Player.X)
 {
     AnsiConsole.MarkupLine("[bold yellow]You win![/]");
+    scores.HumanWins++;
 }
 else if (winner == Player.O)
 {
     AnsiConsole.MarkupLine("[bold green]The computer wins![/]");
+    scores.ComputerWins++;
 }
 else
 {
     AnsiConsole.MarkupLine("[bold]It's a draw![/]");
+    scores.Draws++;
 }
+
+scores.Save();
+RenderScores(scores);
 
 static void Render(Board board)
 {
@@ -74,4 +82,17 @@ static void Render(Board board)
 
     AnsiConsole.Write(grid);
     AnsiConsole.WriteLine();
+}
+
+static void RenderScores(HighScores scores)
+{
+    var table = new Table();
+    table.AddColumn("You");
+    table.AddColumn("Computer");
+    table.AddColumn("Draws");
+    table.AddRow(
+        scores.HumanWins.ToString(),
+        scores.ComputerWins.ToString(),
+        scores.Draws.ToString());
+    AnsiConsole.Write(table);
 }
