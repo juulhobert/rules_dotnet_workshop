@@ -1,0 +1,33 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+new file mode 100644
+index 0000000..cea2a07
+--- /dev/null
++++ b/BUILD.bazel
+@@ -0,0 +1,10 @@
++load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary")
++
++csharp_binary(
++    name = "app",
++    srcs = glob([
++        "src/TicTacToe.Console/*.cs",
++        "src/TicTacToe.Engine/*.cs",
++    ]),
++    target_frameworks = ["net10.0"],
++)
+diff --git a/MODULE.bazel b/MODULE.bazel
+new file mode 100644
+index 0000000..3a7efb7
+--- /dev/null
++++ b/MODULE.bazel
+@@ -0,0 +1,11 @@
++module(
++    name = "dotnet_workshop",
++    version = "0.0.0",
++)
++
++bazel_dep(name = "rules_dotnet", version = "0.0.0")
++git_override(
++    module_name = "rules_dotnet",
++    commit = "93e61b795e0c1e7b8bb4fc4fbc30b558cbbb3aa8",
++    remote = "https://github.com/juulhobert/rules_dotnet.git",
++)

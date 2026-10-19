@@ -1,0 +1,23 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  workshop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install bazelisk as bazel
+        run: |
+          curl -sSL -o bazelisk https://github.com/bazelbuild/bazelisk/releases/download/v1.26.0/bazelisk-linux-amd64
+          sudo install bazelisk /usr/local/bin/bazel
+          bazel version
+
+      - name: Verify all exercise branches
+        run: bash scripts/ci.sh

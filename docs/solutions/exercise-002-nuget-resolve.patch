@@ -1,0 +1,54 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+index cea2a07..4aa0efb 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -7,4 +7,5 @@ csharp_binary(
+         "src/TicTacToe.Engine/*.cs",
+     ]),
+     target_frameworks = ["net10.0"],
++    deps = ["@nuget.net10.0//spectre.console"],
+ )
+diff --git a/MODULE.bazel b/MODULE.bazel
+index 3a7efb7..f662fec 100644
+--- a/MODULE.bazel
++++ b/MODULE.bazel
+@@ -9,3 +9,14 @@ git_override(
+     commit = "93e61b795e0c1e7b8bb4fc4fbc30b558cbbb3aa8",
+     remote = "https://github.com/juulhobert/rules_dotnet.git",
+ )
++
++nuget = use_extension("@rules_dotnet//dotnet:nuget.bzl", "nuget")
++nuget.resolve(
++    name = "nuget",
++    packages = {
++        "Spectre.Console": "0.49.1",
++    },
++    frameworks = ["net10.0"],
++    lock_file = "//:nuget_resolve.json",
++)
++use_repo(nuget, "nuget.net10.0")
+diff --git a/nuget_resolve.json b/nuget_resolve.json
+new file mode 100644
+index 0000000..e1e686a
+--- /dev/null
++++ b/nuget_resolve.json
+@@ -0,0 +1,18 @@
++{
++  "version": 1,
++  "inputHash": "642262244",
++  "frameworks": {
++    "net10.0": {
++      "packages": [
++        {
++          "id": "Spectre.Console",
++          "version": "0.49.1",
++          "sha512": "sha512-SxV241G8P1/WcpUP6QJj5yU0napWp2Sm9oQMHQpZaaWcIWMJKQc1269OQJOdYZKznTqKZIlohje\u002B820kZ6kQsg==",
++          "urls": [
++            "https://api.nuget.org/v3-flatcontainer/spectre.console/0.49.1/spectre.console.0.49.1.nupkg"
++          ]
++        }
++      ]
++    }
++  }
++}
+\ No newline at end of file
