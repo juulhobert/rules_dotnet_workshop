@@ -1,0 +1,3 @@
+# Bazel output symlinks and the bzlmod lock file (regenerated locally).
+bazel-*
+MODULE.bazel.lock
