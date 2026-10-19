@@ -1,38 +1,25 @@
-using System;
+using System.Linq;
+using Spectre.Console;
 using TicTacToe.Engine;
 
 var board = new Board();
 var computer = new ComputerPlayer(Player.O, Player.X);
 
-Console.WriteLine("Tic-Tac-Toe — you are X, the computer is O.");
-Console.WriteLine("Cells are numbered 1-9, left to right, top to bottom.");
-Console.WriteLine();
+AnsiConsole.Write(new FigletText("Tic-Tac-Toe").Color(Color.Blue));
+AnsiConsole.MarkupLine("You are [bold yellow]X[/], the computer is [bold green]O[/].");
+AnsiConsole.WriteLine();
 
 while (!board.IsGameOver())
 {
     Render(board);
 
-    // Human move.
-    int move;
-    while (true)
-    {
-        Console.Write("Your move (1-9): ");
-        var input = Console.ReadLine();
-        if (input is null)
-        {
-            Console.WriteLine("Goodbye!");
-            return;
-        }
-
-        if (int.TryParse(input, out move) && move >= 1 && move <= 9 && board.IsEmpty(move - 1))
-        {
-            break;
-        }
-
-        Console.WriteLine("Invalid move, try again.");
-    }
-
-    board.Place(move - 1, Player.X);
+    // Human move: pick one of the empty cells.
+    var choices = board.EmptyCells().Select(cell => (cell + 1).ToString());
+    var choice = AnsiConsole.Prompt(
+        new SelectionPrompt<string>()
+            .Title("Your move:")
+            .AddChoices(choices));
+    board.Place(int.Parse(choice) - 1, Player.X);
 
     if (board.IsGameOver())
     {
@@ -42,42 +29,49 @@ while (!board.IsGameOver())
     // Computer move.
     var computerMove = computer.ChooseMove(board);
     board.Place(computerMove, Player.O);
-    Console.WriteLine($"The computer plays cell {computerMove + 1}.");
+    AnsiConsole.MarkupLine($"The computer plays cell [bold green]{computerMove + 1}[/].");
 }
 
 Render(board);
 
 var winner = board.Winner();
-Console.WriteLine(winner switch
+if (winner == Player.X)
 {
-    Player.X => "You win!",
-    Player.O => "The computer wins!",
-    _ => "It's a draw!",
-});
+    AnsiConsole.MarkupLine("[bold yellow]You win![/]");
+}
+else if (winner == Player.O)
+{
+    AnsiConsole.MarkupLine("[bold green]The computer wins![/]");
+}
+else
+{
+    AnsiConsole.MarkupLine("[bold]It's a draw![/]");
+}
 
 static void Render(Board board)
 {
-    Console.WriteLine();
+    var grid = new Grid();
+    grid.AddColumn();
+    grid.AddColumn();
+    grid.AddColumn();
+
     for (var row = 0; row < 3; row++)
     {
-        var cells = new string[3];
+        var cells = new Markup[3];
         for (var col = 0; col < 3; col++)
         {
             var index = row * 3 + col;
             cells[col] = board.GetCell(index) switch
             {
-                Player.X => "X",
-                Player.O => "O",
-                _ => (index + 1).ToString(),
+                Player.X => new Markup("[bold yellow]X[/]"),
+                Player.O => new Markup("[bold green]O[/]"),
+                _ => new Markup($"[grey]{index + 1}[/]"),
             };
         }
 
-        Console.WriteLine($" {cells[0]} | {cells[1]} | {cells[2]} ");
-        if (row < 2)
-        {
-            Console.WriteLine("---+---+---");
-        }
+        grid.AddRow(cells);
     }
 
-    Console.WriteLine();
+    AnsiConsole.Write(grid);
+    AnsiConsole.WriteLine();
 }

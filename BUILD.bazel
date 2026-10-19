@@ -1,0 +1,10 @@
+load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary")
+
+csharp_binary(
+    name = "app",
+    srcs = glob([
+        "src/TicTacToe.Console/*.cs",
+        "src/TicTacToe.Engine/*.cs",
+    ]),
+    target_frameworks = ["net10.0"],
+)

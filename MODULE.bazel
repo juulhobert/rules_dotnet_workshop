@@ -1,0 +1,11 @@
+module(
+    name = "dotnet_workshop",
+    version = "0.0.0",
+)
+
+bazel_dep(name = "rules_dotnet", version = "0.0.0")
+git_override(
+    module_name = "rules_dotnet",
+    commit = "93e61b795e0c1e7b8bb4fc4fbc30b558cbbb3aa8",
+    remote = "https://github.com/juulhobert/rules_dotnet.git",
+)
