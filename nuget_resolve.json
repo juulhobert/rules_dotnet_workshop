@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "inputHash": "642262244",
+  "frameworks": {
+    "net10.0": {
+      "packages": [
+        {
+          "id": "Spectre.Console",
+          "version": "0.49.1",
+          "sha512": "sha512-SxV241G8P1/WcpUP6QJj5yU0napWp2Sm9oQMHQpZaaWcIWMJKQc1269OQJOdYZKznTqKZIlohje\u002B820kZ6kQsg==",
+          "urls": [
+            "https://api.nuget.org/v3-flatcontainer/spectre.console/0.49.1/spectre.console.0.49.1.nupkg"
+          ]
+        }
+      ]
+    }
+  }
+}

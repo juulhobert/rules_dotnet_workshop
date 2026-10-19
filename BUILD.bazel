@@ -7,4 +7,5 @@ csharp_binary(
         "src/TicTacToe.Engine/*.cs",
     ]),
     target_frameworks = ["net10.0"],
+    deps = ["@nuget.net10.0//spectre.console"],
 )
