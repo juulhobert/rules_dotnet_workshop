@@ -1,69 +1,70 @@
-# rules_dotnet workshop: Gazelle + NuGet
+# Exercise 000 — It doesn't build yet
 
-A hands-on codelab that teaches you how to build C# with Bazel using
-[rules_dotnet](https://github.com/juulhobert/rules_dotnet): declaring a module,
-resolving and pinning NuGet packages with `nuget.resolve`, and generating +
-maintaining BUILD files with the Gazelle C# extension.
+## Goal
 
-You will build a console tic-tac-toe game played against the computer. **All
-C# code is given.** You write only the Bazel parts: `MODULE.bazel`,
-`BUILD.bazel`, the NuGet pin, and the Gazelle setup.
+Understand what Bazel needs before it can do anything. This branch contains a
+complete tic-tac-toe game in plain C# — and not a single Bazel file.
 
-## What you will learn
+## Steps
 
-- A minimal bzlmod module: `bazel_dep`, and `git_override` (rules_dotnet is
-  not yet published to the Bazel Central Registry).
-- `csharp_binary` / `csharp_library` from rules_dotnet.
-- `nuget.resolve`: package resolution, the `nuget_resolve.json` lock file,
-  and repinning with `REPIN=1 bazel run @nuget.net10.0//:pin`.
-- Gazelle: generating per-directory BUILD files from your C# sources and the
-  lock file, and iterating (add package → repin → rerun Gazelle).
+1. Look at the code. There are two components:
+   - `src/TicTacToe.Engine/` — the game logic (`Board`, `Player`,
+     `ComputerPlayer`). No dependencies outside the .NET base class library.
+   - `src/TicTacToe.Console/Program.cs` — the game loop and UI. It uses the
+     engine via `using TicTacToe.Engine;`.
+2. Try to run the game:
 
-## Prerequisites
+   ```sh
+   bazel run //:app
+   ```
 
-You need exactly:
+3. Ask Bazel what it knows about this directory:
 
-- **bazelisk** available as `bazel` on your `PATH`. Bazel downloads the .NET
-  SDK and the Go toolchain itself; no local .NET or Go install is required.
-- **git**.
-- **A POSIX shell** to run `next_exercise.sh` (on Windows: Git Bash or WSL).
-- **Internet access** (Bazel fetches rules_dotnet, toolchains, and packages).
-- **A real terminal** (not an IDE output panel): from exercise 002 onward the
-  game UI uses Spectre.Console, which needs an interactive terminal.
+   ```sh
+   bazel query //...
+   ```
 
-## How the workshop works
+## Expected outcome
 
-There is one branch per exercise:
+Both commands fail. That is intentional — this exercise is the "before"
+picture. Read the error messages carefully; they tell you exactly what is
+missing.
+
+<details>
+<summary>Hint: why does this fail?</summary>
+
+`bazel run //:app` fails with an error like:
 
 ```
-main → exercise-000-intro → exercise-001-hello-bazel
-     → exercise-002-nuget-resolve → exercise-003-gazelle → exercise-004-change
+ERROR: Bazel 'run' must be invoked from within a workspace (below a directory having a MODULE.bazel file).
 ```
 
-Each branch contains everything you need to start that exercise, including a
-`README.md` with the steps, hints (full reference solutions hidden in
-collapsible blocks), and reflection questions.
+Bazel builds *targets*, not source trees. A directory of C# files means
+nothing to Bazel until you declare:
 
-To move to the next exercise, run:
+1. `MODULE.bazel` — the bzlmod module: its name and its dependencies (such as
+   rules_dotnet, the Bazel rules for .NET).
+2. A `BUILD.bazel` file containing at least one target, such as a
+   `csharp_binary`.
 
-```sh
-./next_exercise.sh
-```
+Exercise 001 adds exactly those two files.
 
-Then open `README.md` again.
+</details>
 
-## WARNING: next_exercise.sh is destructive
+## Questions
 
-`next_exercise.sh` runs `git clean -fdx` and `git reset --hard` before
-switching branches. **All uncommitted changes and untracked files are
-permanently lost.** The script warns you and makes you type `yes` first.
+1. *Why does Bazel refuse to build before any BUILD file exists?*
+   <details><summary>Answer</summary>
+   Bazel builds targets, not source trees. A target must be declared in a
+   BUILD file before Bazel can build, query, or run it — sources alone are
+   invisible to it.
+   </details>
+2. *What two files does Bazel need at minimum in a bzlmod project?*
+   <details><summary>Answer</summary>
+   `MODULE.bazel` (the module definition) and a `BUILD.bazel` with at least
+   one target in it.
+   </details>
 
-Committed work survives (`git reset --hard` resets to your HEAD, keeping your
-local commits). If you experiment, either commit your experiments locally or
-use `git stash` before hopping branches.
+## Next
 
-## Start
-
-```sh
-./next_exercise.sh
-```
+Run `./next_exercise.sh` to move on to exercise 001.
